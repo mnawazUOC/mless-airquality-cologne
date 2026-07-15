@@ -1,6 +1,6 @@
-# Forecasting Urban NO2 Air Pollution in Cologne
+﻿# Forecasting Urban NO2 Air Pollution in Cologne
 
-**MLESS SoSe 2026 — Final Project**
+**MLESS SoSe 2026 - Final Project**
 Category: Time-series analysis / (weather-adjacent) forecasting
 
 ---
@@ -16,8 +16,8 @@ warnings and short-term traffic or policy measures.
 single Cologne traffic station, forecast the **next-day daily-mean NO2**
 concentration (ug/m3). This is a one-step-ahead time-series forecasting task.
 
-**Why it is worth doing.** The chosen station averages 37.5 ug/m3 NO2 — right at
-the EU annual limit of 40 — so forecasting exceedances is practically relevant.
+**Why it is worth doing.** The chosen station averages 37.5 ug/m3 NO2 - right at
+the EU annual limit of 40 - so forecasting exceedances is practically relevant.
 
 ---
 
@@ -43,8 +43,8 @@ budget, as required.
 ### 2.2 Station selection
 
 The full file has ~9.3 M rows for all of Europe. Using PyArrow predicate
-pushdown, only German rows inside a Cologne bounding box (lon 6.75–7.15, lat
-50.80–51.10) were read — 16,646 rows across 7 stations. Coverage per station
+pushdown, only German rows inside a Cologne bounding box (lon 6.75-7.15, lat
+50.80-51.10) were read - 16,646 rows across 7 stations. Coverage per station
 (percent of days with a valid value):
 
 | Station | Type | Area | NO2 | PM2.5 | PM10 | O3 | Days |
@@ -67,7 +67,7 @@ emissions.
 
 1. **Date reconstruction.** The file stores `year` and `doy` (day-of-year), not a
    date. A DatetimeIndex was rebuilt as `Jan-1(year) + (doy - 1) days`.
-2. **Gap characterization.** DENW212 has 3,120 rows over a 3,286-day span — i.e.
+2. **Gap characterization.** DENW212 has 3,120 rows over a 3,286-day span - i.e.
    **166 missing days (~5%)**. NO2 itself has **zero missing values**; PM10 has
    **1,149 missing values (~37%)**.
 3. **Gap-aware windowing.** A supervised sample is emitted only when all days in
@@ -76,7 +76,7 @@ emissions.
 4. **PM10 forward fill.** Requiring PM10 in the windows initially dropped 80% of
    samples (2,474 -> 486), because scattered PM10 gaps poison every overlapping
    window they touch. PM10 was therefore forward-filled (each gap takes the last
-   known value). Forward fill is **causal** — it uses only past values, so it
+   known value). Forward fill is **causal** - it uses only past values, so it
    introduces no future-information leakage. Caveat: long gaps get a stale
    repeated value, weakening the PM10 signal (noted as a limitation).
 5. **Standardization.** Feature mean/std were computed on the **training set
@@ -94,12 +94,12 @@ emissions.
 | Input window | 7 days (main) | One week captures the weekday/weekend traffic cycle |
 | Forecast horizon | 1 day | Standard, most actionable short-term forecast |
 | Target | NO2 daily mean | 100% coverage, traffic-driven |
-| Features (univariate) | NO2 | — |
+| Features (univariate) | NO2 | - |
 | Features (multivariate) | NO2 + PM10 | PM10 co-varies with traffic and dispersion |
 
 ### 3.2 Train / test split
 
-Chronological by target date: **train = 2015–2021, test = 2022–2023**. A random
+Chronological by target date: **train = 2015-2021, test = 2022-2023**. A random
 split is avoided because it would leak future information into training, which is
 invalid for forecasting. At window 7 this yields **2,058 train / 416 test**
 windows. The same split is applied to univariate and multivariate data so they
@@ -120,7 +120,7 @@ runs in seconds on CPU.
 
 ### 3.4 Ablation
 
-**Varied parameter:** the input feature set — univariate (NO2) vs multivariate
+**Varied parameter:** the input feature set - univariate (NO2) vs multivariate
 (NO2 + PM10). **Hypothesis:** adding PM10 improves next-day NO2 forecasts,
 because the two pollutants share traffic and weather drivers.
 
@@ -150,17 +150,17 @@ interpretable and comparable against the baseline.
 
 | Model | Features | MAE | RMSE |
 |---|---|---|---|
-| Persistence | — | 6.22 | 7.84 |
+| Persistence | - | 6.22 | 7.84 |
 | FFN | NO2 | **5.73** | **7.14** |
 | FFN | NO2+PM10 | 5.81 | 7.21 |
 | LSTM | NO2 | 5.85 | 7.23 |
 | LSTM | NO2+PM10 | 5.79 | 7.14 |
 
-All four neural models beat persistence (~8–9% lower MAE), confirming they learn
+All four neural models beat persistence (~8-9% lower MAE), confirming they learn
 real structure. At this short window they are nearly tied with each other; the
 simple univariate FFN is marginally best. The predicted-vs-actual plot shows the
 models track everyday NO2 well but **undershoot sudden spikes** (e.g. a real
-peak near 72 ug/m3 that the models reach only ~54–57) — a known limitation of
+peak near 72 ug/m3 that the models reach only ~54-57) - a known limitation of
 one-step forecasting.
 
 ### 5.2 Window-length experiment (test MAE)
@@ -180,7 +180,7 @@ windows. **Caveat:** longer windows sharply reduce the usable test set (down to
 27 samples at window 60), so the longest-window results are suggestive only; the
 30-day result (146 samples) is the most reliable evidence of the crossover.
 
-### 5.3 Ablation across windows (test MAE, PM10 effect = multi − uni)
+### 5.3 Ablation across windows (test MAE, PM10 effect = multi âˆ’ uni)
 
 | Window | FFN uni -> multi | LSTM uni -> multi |
 |---|---|---|
@@ -192,7 +192,7 @@ windows. **Caveat:** longer windows sharply reduce the usable test set (down to
 Adding PM10 **consistently harms the FFN** (it cannot structure the extra,
 partly-stale feature and treats it as noise). For the **LSTM** the effect is
 small but mostly positive, and clearest at window 14, where LSTM+PM10 reaches
-**5.67 MAE — the best result in the project**. The effect is not monotonic
+**5.67 MAE - the best result in the project**. The effect is not monotonic
 (negligible at window 30) and rests on shrinking test sets, so it is reported as
 suggestive rather than conclusive.
 
@@ -200,7 +200,7 @@ suggestive rather than conclusive.
 
 ## 6. Conclusions
 
-1. **All neural models beat the naive baseline** (MAE 6.22 -> ~5.7–5.9). The
+1. **All neural models beat the naive baseline** (MAE 6.22 -> ~5.7-5.9). The
    improvement is modest because daily NO2 is highly autocorrelated, making
    persistence a strong baseline.
 2. **Model choice depends on the window.** The simple FFN is best at short
@@ -223,12 +223,12 @@ learning outcome of the project.
 ## 7. Observations (experiences)
 
 - The provider-side gap-filling and daily aggregation removed the hardest part of
-  a typical EEA project (assembling per-station hourly files) — the single
+  a typical EEA project (assembling per-station hourly files) - the single
   biggest time-saver.
 - PyArrow predicate pushdown made a 9.3 M-row file workable without loading it
   fully into memory.
 - **Data processing was harder than expected in one respect:** requiring PM10
-  silently destroyed 80% of the windows until the forward-fill fix — a good
+  silently destroyed 80% of the windows until the forward-fill fix - a good
   reminder to inspect sample counts after every preprocessing step.
 
 ---
@@ -259,12 +259,36 @@ python main.py data/<daily_parquet_filename>.parquet
 
 `main.py` runs the data pipeline, the persistence baseline, the FFN and LSTM
 (univariate), and the PM10 ablation, then prints the results table. The full
-study — including exploratory analysis, the window-length experiment and all
-plots — is in `notebooks/CODE_MLESS_2026.ipynb`. Running
+study - including exploratory analysis, the window-length experiment and all
+plots - is in `notebooks/CODE_MLESS_2026.ipynb`. Running
 `python src/data_processing.py <parquet>` alone prints the station-coverage table
 and split counts.
 
-Random seeds are fixed (42); all metrics are reported on the 2022–2023 test set.
+Random seeds are fixed (42); all metrics are reported on the 2022-2023 test set.
 Neural-network metrics may still vary by a small margin (~0.1 MAE) across machines
 or PyTorch versions due to floating-point and initialization differences; the
 values reported here are from the notebook run.
+
+
+
+## Figures
+
+**Figure 1 - Predicted vs actual NO2 (first 120 test predictions, window 7).**
+The models track everyday NO2 well but undershoot sudden spikes.
+
+![Predicted vs actual NO2](../results/PLOTA.png)
+
+**Figure 2 - MAE vs input window length.**
+The FFN degrades as the window grows while the LSTM stays stable, crossing over
+around window 30.
+
+![MAE vs window length](../results/PLOTB.png)
+
+**Figure 3 - Model comparison (window 7), MAE and RMSE.**
+All neural models beat the persistence baseline; at a short window they are
+nearly tied.
+
+![Model comparison](../results/PLOTC.png)
+
+
+
