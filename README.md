@@ -70,3 +70,16 @@ Open `notebooks/CODE_MLESS_2026.ipynb` — it contains the EDA, all experiments
 - **Split:** chronological (train 2015–2021, test 2022–2023) to avoid leakage.
 - **Models:** persistence baseline, FFN, LSTM (Adam, MSE, 100 epochs, seed 42).
 - **Metrics:** MAE and RMSE, in ug/m3.
+
+## Getting the data
+
+The raw parquet (~204 MB) is not stored in this repository (see .gitignore).
+To reproduce the results, download the daily aggregate file from Zenodo:
+
+- Dataset: EEA Air Quality In-Situ Measurement Station Data
+- DOI: https://doi.org/10.5281/zenodo.14513586
+- File: airquality.no2.o3.so2.pm10.pm2p5_2.daily_pnt_20150101_20231231_eu_epsg.3035_v20240718.parquet
+
+Place the downloaded file in the data/ folder, then run:
+
+    python main.py data/airqualitymless.parquet
