@@ -180,7 +180,7 @@ windows. **Caveat:** longer windows sharply reduce the usable test set (down to
 27 samples at window 60), so the longest-window results are suggestive only; the
 30-day result (146 samples) is the most reliable evidence of the crossover.
 
-### 5.3 Ablation across windows (test MAE, PM10 effect = multi âˆ’ uni)
+### 5.3 Ablation across windows (test MAE, PM10 effect = multi minus uni)
 
 | Window | FFN uni -> multi | LSTM uni -> multi |
 |---|---|---|
@@ -289,6 +289,7 @@ All neural models beat the persistence baseline; at a short window they are
 nearly tied.
 
 ![Model comparison](../results/PLOTC.png)
+
 
 
 
