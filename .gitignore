@@ -1,0 +1,13 @@
+# raw data (large, download from Zenodo)
+data/*.parquet
+data/*.csv
+
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# results artifacts you may not want to commit (keep figures if desired)
+*.pth
